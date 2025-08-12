@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<base href="./Data/" />
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Magic Item Generator</title>
+    <link rel="stylesheet" href="website/styles.css" />
+    <link rel="icon" type="image/x-icon"
+        href="https://raw.githubusercontent.com/Shadow-Draconic-Development/.github/main/assets/icon.ico" />
+</head>
+
+<body>
+    <header>
+        <h1>Magic Item Generator</h1>
+        <img src="images/main.png" alt="Logo" width="10%" style="min-width: 70px" />
+    </header>
+    <nav>
+        <a href="https://shadow-draconic-development.github.io/.github/" target="_blank">Shadow Draconic Development
+            Main Page</a>
+        <a href="https://github.com/Shadow-Draconic-Development" target="_blank">GitHub</a>
+    </nav>
+
+    <main>
+        <button id="toggleTheme">Toggle Dark Mode</button>
+
+        <div>
+            <select id="addRaritySelect">
+                <option value="">-- Select Rarity --</option>
+            </select>
+            <button id="addRarityBtn">Add Rarity</button>
+        </div>
+
+        <div id="rarityManager"></div>
+
+        <textarea id="jsonOutput" readonly></textarea>
+        <button id="copyBtn">Copy to Clipboard</button>
+    </main>
+
+
+    <script src="website/scripts.js"></script>
+</body>
+
+</html>

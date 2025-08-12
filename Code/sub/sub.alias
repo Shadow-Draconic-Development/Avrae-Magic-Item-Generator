@@ -1,0 +1,61 @@
+embed
+<drac2>
+
+
+def main(input_list: list[str]) -> tuple[str, str, str]:
+    """
+    Main program function
+
+    Args:
+        input_list (list[str]): List of user inputs
+
+    Return:
+        str: Title
+        str: Main body paragraph
+        str: Hex color code
+    """
+
+    # If there are no inputs
+    if len(input_list) < 1:
+        return "You Have Been Sneak Attacked by an Error", "Expected GVAR ID as input", "#CF142B"
+
+    # Try to validate GVAR ID
+    try:
+        load_json(get_gvar(input_list[0]))
+
+    # If invalid GVAR ID
+    except:
+        return "You Have Been Sneak Attacked by an Error", "Invalid input (GVAR doesn't exist or is invalid)", "#CF142B"
+
+    # Load SVAR list
+    svar_list = load_json(get_uvar("magicitemsubs", default="[]"))
+
+    # Add validated GVAR ID
+    svar_list.append(input_list[0])
+
+    # Remove duplicates
+    svar_list = list(set(svar_list))
+
+    # Set UVAR
+    set_uvar("magicitemsubs", dump_json(svar_list))
+
+    # If a character is selected, grab color from csettings
+    if (ch := character()):
+        color = color
+
+    # If a character is not selected, grab random color
+    else:
+        color = ""
+
+    return "Magic item UVAR updated", input_list[0], color
+
+
+# Main program function
+title, f, color = main(&ARGS&)
+
+
+</drac2>
+-title "{{title}}"
+-f "{{f}}"
+-color "{{color}}"
+-footer "{{ctx.prefix}}magicitem sub [GVAR ID] | 8/11/25 | ShadowsStride"

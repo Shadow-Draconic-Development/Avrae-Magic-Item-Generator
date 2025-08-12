@@ -1,0 +1,213 @@
+embed
+<drac2>
+
+
+def search_list(query: str, item_list: list[str]) -> list[str]|None:
+    """
+    Searches for item in list.
+
+    Args:
+        query (str): The query being made
+        item_list (list): List of items
+
+    Return:
+        list[str]|None: If it finds at least one match, it returns the item(s) in a list, otherwise it returns None
+    """
+
+    # Finds at least 1 match
+    if len(item_results := [item for item in item_list if query.lower() in item.lower()]) > 0:
+        return item_results
+
+    # If it finds no matches
+    else:
+        return None
+
+
+def multiple_match_determine(search_result: list[str], input_value: str) -> str|bool:
+    """
+    Determines if there is an exact match in search results
+    
+    Args:
+        search_result (list[str]): List of search results
+        input_value (str): Input value to match
+
+    Returns:
+        str|bool: The exact match if found, otherwise False
+    """
+
+    for match in search_result:
+        if match.lower() == input_value.lower():
+            return match
+
+    return False
+
+
+def get_magic_item_dict(subs_list: list[str]) -> dict:
+    """
+    Grabs dictionary containing all magic items that the player/server is subscribed to
+    
+    Args:
+        subs_list (list[str]): List of GVAR IDs
+
+    Return:
+        dict: Magic item dictionary
+    """
+
+    # Convert to set to remove duplicates, then convert back to list
+    subs_list = list(set(subs_list))
+
+    # Add Basic Rules (2014)
+    subs_list.append("7435d071-4367-49ee-8482-6143e83e8517")
+
+    # Create empty dictionary
+    magic_item_dict = dict()
+
+    # For each GVAR ID
+    for gvar in subs_list:
+
+        try:
+
+            # Try to load GVAR (errors out if empty GVAR or invalid ID)
+            temp_dict = load_json(get_gvar(gvar))
+
+            # For each rarity, magic item list pair
+            for rarity, magic_item_list in temp_dict.items():
+
+                # If rarity already exists, add to list
+                if rarity.lower() in magic_item_dict.keys():
+                    magic_item_dict[rarity.lower()] += magic_item_list 
+
+                # If rarity doesn't already exist, set to list
+                else:
+                    magic_item_dict[rarity.lower()] = magic_item_list 
+
+        except:
+            pass
+
+    return magic_item_dict
+
+
+def main(input_list: list[str]) -> tuple[str, str, str]:
+    """
+    Main program function
+
+    Args:
+        input_list (list[str]): List of user inputs
+
+    Return:
+        str: Title
+        str: Main body paragraph
+        str: Hex color code
+    """
+
+    # If no inputs where provided
+    if len(input_list) < 1:
+        return "You Have Been Sneak Attacked by an Error", "No inputs provided", "#CF142B"
+
+    # If at least one input was provided
+    elif len(input_list) < 2:
+
+        # Try to turn input into an integer
+        try:
+            int(input_list[0])
+            return "You Have Been Sneak Attacked by an Error", "You must provide a rarity", "#CF142B"
+
+        # If input is not a number
+        except:
+            input_list.append(1)
+
+    # To verify that there are rarity number pairs
+    elif len(input_list) % 2 != 0:
+        return "You Have Been Sneak Attacked by an Error", "You must provide proper rarity-number pairs\n\nE.g. 'Very Rare' 5 'Rare' 6 etc.", "#CF142B"
+
+
+    # Get magic item dictionary
+    magic_item_dict = get_magic_item_dict(load_json(get_svar("magicitemsubs", default="[]")) + load_json(get_uvar("magicitemsubs", default="[]")))
+
+    # Turn inputs into a rarity number pair via a dictionary
+    key_value_dict = {input_list[i]: input_list[i+1] for i in range(0, len(input_list), 2)}
+
+    # Create clean new dictionaries for later use
+    clean_dict = {}
+    final_dict = {}
+
+
+    # For each rarity
+    for rarity in list(key_value_dict.keys()):
+
+        # If rarity is in magic item dictionary
+        if (search_result := search_list(rarity, magic_item_dict.keys())):
+
+            # If there is exactly one match, add to clean dictionary
+            if len(search_result) == 1:
+                clean_dict[search_result[0]] = key_value_dict[rarity]
+
+            # If there is more than one match
+            else:
+                
+                # If there is an exact match
+                if (search_result2 := multiple_match_determine):
+                    clean_dict[search_result2] = key_value_dict[rarity]
+
+    # Not explicitly programmed, but if a rarity match is not found (nor an exact match), the rarity number pair does not make it into the clean dictionary
+
+    # If no rarity number pairs made it into the clean dictionary
+    if len(clean_dict) < 1:
+        return "You Have Been Sneak Attacked by an Error", "You must provide proper rarity-number pairs\n\nE.g. 'Very Rare' 5 'Rare' 6 etc and verify you have the correct rarities setup", "#CF142B"
+
+    # For each rarity number pair in the clean dictionary
+    for rarity, number in clean_dict.items():
+
+        # Try to turn the number into an integer (and verify it is greater than 0), if it works then it makes it into the final dictionary
+        try:
+            if (int_value := int(number)) > 0:
+                final_dict[rarity] = int_value
+
+        # Number is not actually a number, or it is less than 1. Does not make it into the final dictionary
+        except:
+            pass
+
+    # If no rarity number pair made it into the final dictionary
+    if len(final_dict) < 1:
+        return "You Have Been Sneak Attacked by an Error", "You must provide proper rarity-number pairs\n\nE.g. 'Very Rare' 5 'Rare' 6 etc. and numbers must be greater than or equal to 1", "#CF142B"
+
+    # Create new list to hold magic items
+    magic_items = []
+
+    # For each rarity number pair in the final dictionary
+    for rarity, number in final_dict.items():
+
+        # Grab the list of items form the magic item dictionary, place it into a set to remove duplicates, then place it back into a list
+        magic_item_list = list(set(magic_item_dict[rarity]))
+
+        # For each magic item
+        for _ in range(0, number):
+
+            # If rarity is not very rare
+            if rarity != "very rare":
+                magic_items.append(f"{randchoice(magic_item_list)} ({rarity.capitalize()})")
+
+            # If rarity is very rare
+            else:
+                magic_items.append(f"{randchoice(magic_item_list)} (Very Rare)")
+
+    # If a character is selected, grab color from csettings
+    if (ch := character()):
+        color = color
+
+    # If a character is not selected, grab random color
+    else:
+        color = ""
+
+    return "Random Magic Items:", "\n".join(magic_items), color
+
+
+# Main program function
+title, f, color = main(&ARGS&)
+l = "<"
+
+</drac2>
+-title "{{title}}"
+-f "{{f}}"
+-color "{{color}}"
+-footer "{{ctx.prefix}}magicitem {{l}}rarity> {{l}}#> | 8/11/25 | ShadowsStride"
