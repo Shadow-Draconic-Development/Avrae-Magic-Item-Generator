@@ -1,0 +1,9 @@
+{
+    "common": ["Magic item name"],
+    "uncommon": ["Magic item name"],
+    "rare": ["Magic item name"],
+    "very rare": ["Magic item name"],
+    "legendary": ["Magic item name"],
+    "artifact": ["Magic item name"],
+    "unknown": ["Magic item name"]
+}

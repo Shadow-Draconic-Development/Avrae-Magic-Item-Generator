@@ -146,7 +146,7 @@ def main(input_list: list[str]) -> tuple[str, str, str]:
             else:
                 
                 # If there is an exact match
-                if (search_result2 := multiple_match_determine):
+                if (search_result2 := multiple_match_determine(search_result, rarity)):
                     clean_dict[search_result2] = key_value_dict[rarity]
 
     # Not explicitly programmed, but if a rarity match is not found (nor an exact match), the rarity number pair does not make it into the clean dictionary
@@ -191,6 +191,8 @@ def main(input_list: list[str]) -> tuple[str, str, str]:
             else:
                 magic_items.append(f"{randchoice(magic_item_list)} (Very Rare)")
 
+        magic_items.append("")
+
     # If a character is selected, grab color from csettings
     if (ch := character()):
         color = color
@@ -205,9 +207,10 @@ def main(input_list: list[str]) -> tuple[str, str, str]:
 # Main program function
 title, f, color = main(&ARGS&)
 l = "<"
+n = "\n"
 
 </drac2>
 -title "{{title}}"
 -f "{{f}}"
 -color "{{color}}"
--footer "{{ctx.prefix}}magicitem {{l}}rarity> {{l}}#> | 8/11/25 | ShadowsStride"
+-footer "{{ctx.prefix}}magicitem {{l}}rarity> {{l}}#> | 8/13/25 | ShadowsStride{{n}}For multiple rarities, simply type {{ctx.prefix}}magicitem {{l}}rarity 1> {{l}}#> {{l}}rarity 2> {{l}}#> etc."

@@ -1,0 +1,55 @@
+multiline
+<drac2>
+
+
+def main() -> tuple[str,str]:
+    """
+    Main program function
+
+    Return:
+        str: Embed string
+        str: SVAR string
+    
+    """
+
+    # Load defaults
+    prefix = ctx.prefix
+    footer = f"{prefix}magicitem sub serve | 8/12/25 | ShadowsStride"
+
+    # If UVAR exists, load dictionary
+    if (uvar_test := get_uvar("magicitemsubs")):
+        uvar_list = load_json(uvar_test)
+
+    # IF UVAR does not exist
+    else:
+        return f"{prefix}embed -title 'You Have Been Sneak Attacked by an Error' -f 'You have no subscriptions to serve' -color '#CF142B' -footer {footer}", ""
+
+    # Load SVAR
+    svar_list = load_json(get_svar("magicitemsubs", default="[]"))
+
+    # Add items from UVAR list to SVAR list
+    svar_list += uvar_list
+
+    # Remove duplicates
+    svar_list = list(set(svar_list))
+
+    # If a character is selected, grab color from csettings
+    if (ch := character()):
+        color = color
+
+    # If a character is not selected, grab random color
+    else:
+        color = ""
+
+    svar_string = "\n".join(svar_list)
+
+    return f"{prefix}embed -title 'Magic Item SVAR Updated' -f '{svar_string}' -color '{color}' -footer {footer}", f"{prefix}svar magicitemsubs {dump_json(svar_list)}"
+    
+
+# Main program function
+embed_str, svar_str = main()
+
+
+</drac2>
+{{embed_str}}
+{{svar_str}}

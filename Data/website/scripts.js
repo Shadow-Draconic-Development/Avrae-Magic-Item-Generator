@@ -1,4 +1,4 @@
-const rarities = ["common", "uncommon", "rare", "very rare", "legendary", "artifact"];
+const rarities = ["common", "uncommon", "rare", "very rare", "legendary", "artifact", "unknown"];
 const magicItems = {};
 const rarityManager = document.getElementById('rarityManager');
 const addRaritySelect = document.getElementById('addRaritySelect');

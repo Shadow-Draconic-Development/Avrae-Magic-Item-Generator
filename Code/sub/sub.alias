@@ -27,17 +27,17 @@ def main(input_list: list[str]) -> tuple[str, str, str]:
     except:
         return "You Have Been Sneak Attacked by an Error", "Invalid input (GVAR doesn't exist or is invalid)", "#CF142B"
 
-    # Load SVAR list
-    svar_list = load_json(get_uvar("magicitemsubs", default="[]"))
+    # Load UVAR list
+    uvar_list = load_json(get_uvar("magicitemsubs", default="[]"))
 
     # Add validated GVAR ID
-    svar_list.append(input_list[0])
+    uvar_list.append(input_list[0])
 
     # Remove duplicates
-    svar_list = list(set(svar_list))
+    uvar_list = list(set(uvar_list))
 
     # Set UVAR
-    set_uvar("magicitemsubs", dump_json(svar_list))
+    set_uvar("magicitemsubs", dump_json(uvar_list))
 
     # If a character is selected, grab color from csettings
     if (ch := character()):
@@ -47,7 +47,7 @@ def main(input_list: list[str]) -> tuple[str, str, str]:
     else:
         color = ""
 
-    return "Magic item UVAR updated", input_list[0], color
+    return "Magic Item UVAR Updated", input_list[0], color
 
 
 # Main program function
