@@ -118,7 +118,7 @@ def main(input_list: list[str]) -> tuple[str, str, str]:
 
     # To verify that there are rarity number pairs
     elif len(input_list) % 2 != 0:
-        return "You Have Been Sneak Attacked by an Error", "You must provide proper rarity-number pairs\n\nE.g. 'Very Rare' 5 'Rare' 6 etc.", "#CF142B"
+        return "You Have Been Sneak Attacked by an Error", "You must provide proper rarity-number pairs\n\nE.g. 'Very Rare' 5 'Rare' 1d6 etc.", "#CF142B"
 
 
     # Get magic item dictionary
@@ -153,14 +153,14 @@ def main(input_list: list[str]) -> tuple[str, str, str]:
 
     # If no rarity number pairs made it into the clean dictionary
     if len(clean_dict) < 1:
-        return "You Have Been Sneak Attacked by an Error", "You must provide proper rarity-number pairs\n\nE.g. 'Very Rare' 5 'Rare' 6 etc and verify you have the correct rarities setup", "#CF142B"
+        return "You Have Been Sneak Attacked by an Error", "You must provide proper rarity-number pairs\n\nE.g. 'Very Rare' 5 'Rare' 1d6 etc and verify you have the correct rarities setup", "#CF142B"
 
     # For each rarity number pair in the clean dictionary
     for rarity, number in clean_dict.items():
 
-        # Try to turn the number into an integer (and verify it is greater than 0), if it works then it makes it into the final dictionary
+        # Try to dice roll the number/dice (and verify it is greater than 0), if it works then it makes it into the final dictionary
         try:
-            if (int_value := int(number)) > 0:
+            if (int_value := vroll(number).total) > 0:
                 final_dict[rarity] = int_value
 
         # Number is not actually a number, or it is less than 1. Does not make it into the final dictionary
@@ -169,7 +169,7 @@ def main(input_list: list[str]) -> tuple[str, str, str]:
 
     # If no rarity number pair made it into the final dictionary
     if len(final_dict) < 1:
-        return "You Have Been Sneak Attacked by an Error", "You must provide proper rarity-number pairs\n\nE.g. 'Very Rare' 5 'Rare' 6 etc. and numbers must be greater than or equal to 1", "#CF142B"
+        return "You Have Been Sneak Attacked by an Error", "You must provide proper rarity-number pairs\n\nE.g. 'Very Rare' 5 'Rare' 1d6 etc. and numbers/dice must be greater than or equal to 1", "#CF142B"
 
     # Create new list to hold magic items
     magic_items = []
@@ -213,4 +213,4 @@ n = "\n"
 -title "{{title}}"
 -f "{{f}}"
 -color "{{color}}"
--footer "{{ctx.prefix}}magicitem {{l}}rarity> {{l}}#> | 8/13/25 | ShadowsStride{{n}}For multiple rarities, simply type {{ctx.prefix}}magicitem {{l}}rarity 1> {{l}}#> {{l}}rarity 2> {{l}}#> etc."
+-footer "For multiple rarities, simply type {{ctx.prefix}}magicitem {{l}}rarity 1> {{l}}#> {{l}}rarity 2> {{l}}#> etc. (supports dice){{n}}{{ctx.prefix}}magicitem {{l}}rarity> {{l}}#> | 8/20/25 | ShadowsStride"
